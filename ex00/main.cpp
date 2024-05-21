@@ -6,7 +6,7 @@
 /*   By: nmunir <nmunir@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/19 13:06:21 by nmunir            #+#    #+#             */
-/*   Updated: 2024/05/20 17:00:44 by nmunir           ###   ########.fr       */
+/*   Updated: 2024/05/21 10:14:31 by nmunir           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,10 +40,7 @@ void isFileValid(const char *fileName)
 	}
 }
 
-bool isDateValid(std::string date)
-{
-	return (true);
-}
+
 
 
 int main(int argc, const char** argv) {
@@ -53,6 +50,7 @@ int main(int argc, const char** argv) {
 		 return (1);
 	}
 	BitcoinExchange b(argv[1]);
+	// b.printDatabase();
 	// b.compareFile();
 	// try
 	// {
