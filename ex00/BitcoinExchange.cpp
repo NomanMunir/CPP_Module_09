@@ -6,17 +6,19 @@
 /*   By: nmunir <nmunir@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/20 14:51:32 by nmunir            #+#    #+#             */
-/*   Updated: 2024/05/21 12:19:49 by nmunir           ###   ########.fr       */
+/*   Updated: 2024/05/21 13:11:55 by nmunir           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "BitcoinExchange.hpp"
 
+BitcoinExchange::BitcoinExchange() { }
+
 void BitcoinExchange::createDatabase()
 {
 	std::ifstream file("./data.csv");
 	if (!file.is_open())
-		throw std::runtime_error("Error: unable to open file.");
+		throw std::runtime_error("Error: unable to open './data.csv' file.");
 
 	std::string line;
 	getline(file, line);
@@ -81,6 +83,7 @@ int isValueValid(std::string value)
 	catch(const std::exception& e)
 	{
 		std::cerr << e.what() << '\n';
+		throw;
 	}
 	return (2);
 }
@@ -121,7 +124,7 @@ bool BitcoinExchange::isLeapYear(int year) {
     return (year % 4 == 0 && year % 100 != 0) || (year % 400 == 0);
 }
 
-void BitcoinExchange::createInputFile(std::string& inputFile)
+void BitcoinExchange::readInputFile(std::string& inputFile)
 {
 	try
 	{
@@ -175,12 +178,11 @@ BitcoinExchange::BitcoinExchange(std::string inputFile)
 	try
 	{
 		createDatabase();
-		createInputFile(inputFile);
+		readInputFile(inputFile);
 	}
 	catch(const std::exception& e)
 	{
 		std::cerr << e.what() << '\n';
-		throw;
 	}
 }
 

@@ -6,7 +6,7 @@
 /*   By: nmunir <nmunir@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/21 13:24:37 by nmunir            #+#    #+#             */
-/*   Updated: 2024/05/21 15:46:29 by nmunir           ###   ########.fr       */
+/*   Updated: 2024/05/21 15:48:33 by nmunir           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,7 +100,7 @@ int main(int ac, char **av)
 {
 	if (ac != 2)
 	{
-		std::cerr << "Invalid Input: ./< input >" << std::endl;
+		std::cerr << "Error: ./< input >" << std::endl;
 		return (1);
 	}
 	std::deque<std::string> data;
@@ -110,10 +110,7 @@ int main(int ac, char **av)
 	while(iss >> word)
 		data.push_front(word);
 	if (!validateInput(data))
-		{ std::cerr << "Invalid Input" << std::endl; return (0); }
-	calculate(data);
-	printStack(data);
-	
+		{ std::cerr << "Error" << std::endl; return (0); }
 	
 	return (0);
 }

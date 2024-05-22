@@ -5,26 +5,25 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: nmunir <nmunir@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/05/19 13:06:21 by nmunir            #+#    #+#             */
-/*   Updated: 2024/05/21 12:53:58 by nmunir           ###   ########.fr       */
+/*   Created: 2024/05/21 13:24:37 by nmunir            #+#    #+#             */
+/*   Updated: 2024/05/22 09:53:04 by nmunir           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "BitcoinExchange.hpp"
+#include <iostream>
+#include <deque>
+#include <sstream>
+#include <string>
+#include <cctype>
+#include <cstdlib>
 
-int main(int argc, const char** argv) {
-	if (argc != 2)
+int main(int ac, char **av)
+{
+	if (ac != 2)
 	{
-		std::cerr << "Invalid Input: ./< file name >" << std::endl;
-		 return (1);
+		std::cerr << "Error: ./< input >" << std::endl;
+		return (1);
 	}
-	try
-	{
-		BitcoinExchange b(argv[1]);
-	}
-	catch(const std::exception& e)
-	{
-		std::cerr << e.what() << '\n';
-	}
-	return 0;
+
+	return (0);
 }
