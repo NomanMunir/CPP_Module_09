@@ -6,7 +6,7 @@
 /*   By: nmunir <nmunir@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/22 10:52:57 by nmunir            #+#    #+#             */
-/*   Updated: 2024/05/25 15:35:51 by nmunir           ###   ########.fr       */
+/*   Updated: 2024/05/25 15:48:14 by nmunir           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -143,6 +143,14 @@ PmergeMe::PmergeMe(const char **av)
         vec.push_back(std::atoi(*av));
 		lst.push_back(std::atoi(*av));
     }
+    int staggler;
+    bool isOdd = false;
+    if (vec.size() % 2 != 0)
+    {
+        staggler = vec.back();
+        isOdd = true;
+        vec.erase(vec.end() - 1);
+    }
     std::vector<std::pair<int, int> > pairs =  createPairs(vec);
     sortPair(pairs, pairs.size());
     // printPairs(pairs);
@@ -153,7 +161,8 @@ PmergeMe::PmergeMe(const char **av)
         S.push_back(pairs[i].second);
         pend.push_back(pairs[i].first);
     }
-    print(S);
+    if (isOdd)
+        pend.push_back(staggler);
     create_S(S, pend);
     print(S);
     
