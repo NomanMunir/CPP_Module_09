@@ -6,7 +6,7 @@
 /*   By: nmunir <nmunir@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/22 10:52:57 by nmunir            #+#    #+#             */
-/*   Updated: 2024/05/26 14:12:06 by nmunir           ###   ########.fr       */
+/*   Updated: 2024/05/26 15:38:42 by nmunir           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ size_t jacobsthal(size_t n)
     return jacobsthal(n - 1) + 2 * jacobsthal(n - 2);
 }
 
-std::list<IntPair> createPairs(std::list<int> lst)
+std::list<IntPair> createPairsList(std::list<int> lst)
 {
     std::list<IntPair> pairs;
     IntListIterator i = lst.begin();
@@ -43,11 +43,11 @@ std::list<IntPair> createPairs(std::list<int> lst)
     return pairs;
 }
 
-void sortPair(std::list<std::pair<int, int> > &pairs, size_t n)
+void sortPairList(std::list<std::pair<int, int> > &pairs, size_t n)
 {
     if (n <= 1)
         return;
-    sortPair(pairs, n - 1);
+    sortPairList(pairs, n - 1);
     size_t i = n - 1;
     std::list<std::pair<int, int> >::iterator it = pairs.begin();
     std::advance(it, n - 1);
@@ -80,7 +80,7 @@ std::list<int>::iterator bisearch(std::list<int>& S, int item)
     return std::upper_bound(S.begin(), S.end(), item);
 }
 
-void create_S(std::list<int> &S, std::list<int> &pend)
+void createSortedList(std::list<int> &S, std::list<int> &pend)
 {
     std::list<int> jacob_sequence = build_jacob_insertion_sequence(pend.size());
     size_t iter = 0;
@@ -123,7 +123,7 @@ void create_S(std::list<int> &S, std::list<int> &pend)
     }
 }
 
-std::vector<std::pair<int, int> > createPairs(std::vector<int> vec)
+std::vector<std::pair<int, int> > createPairsVector(std::vector<int> vec)
 {
     std::vector<std::pair<int, int> > pairs;
     for (size_t i = 0; i < vec.size() - 1; i += 2)
@@ -136,11 +136,11 @@ std::vector<std::pair<int, int> > createPairs(std::vector<int> vec)
     return (pairs);
 }
 
-void sortPair(std::vector<std::pair<int, int> > &pairs, size_t n)
+void sortPairVector(std::vector<std::pair<int, int> > &pairs, size_t n)
 {
     if (n <= 1)
         return ;
-    sortPair(pairs, n - 1);
+    sortPairVector(pairs, n - 1);
     size_t i = n - 1;
     std::pair<int, int> newPair = pairs[n - 1];
     for (; i > 0 && newPair.second < pairs[i - 1].second; i--)
@@ -173,7 +173,7 @@ std::vector<int>::iterator bisearch(std::vector<int>& S, int item)
     return std::upper_bound(S.begin(), S.end(), item);
 }
 
-void create_S(std::vector<int> &S, std::vector<int> &pend)
+void createSortedVector(std::vector<int> &S, std::vector<int> &pend)
 {
     std::vector<int> jacob_sequence = build_jacob_insertion_sequence_for_vec(pend.size());
     size_t iter = 0;
@@ -243,8 +243,8 @@ std::list<int> PmergeMe::sortWithLst()
         isOdd = true;
         lst.pop_back();
     }
-    std::list<std::pair<int, int> > pairs =  createPairs(lst);
-    sortPair(pairs, pairs.size());
+    std::list<std::pair<int, int> > pairs =  createPairsList(lst);
+    sortPairList(pairs, pairs.size());
     std::list<int> S;
     std::list<int> pend;
     std::list<std::pair<int, int> >::iterator i = pairs.begin();
@@ -255,7 +255,7 @@ std::list<int> PmergeMe::sortWithLst()
     }
     if (isOdd)
         pend.push_back(staggler);
-    create_S(S, pend);
+    createSortedList(S, pend);
     return (S);
 }
 
@@ -269,8 +269,8 @@ std::vector<int> PmergeMe::sortWithVec()
         isOdd = true;
         vec.erase(vec.end() - 1);
     }
-    std::vector<std::pair<int, int> > pairs =  createPairs(vec);
-    sortPair(pairs, pairs.size());
+    std::vector<std::pair<int, int> > pairs =  createPairsVector(vec);
+    sortPairVector(pairs, pairs.size());
     std::vector<int> S;
     std::vector<int> pend;
     for (size_t i = 0; i < pairs.size(); i++)
@@ -280,19 +280,12 @@ std::vector<int> PmergeMe::sortWithVec()
     }
     if (isOdd)
         pend.push_back(staggler);
-    create_S(S, pend);
+    createSortedVector(S, pend);
     return (S);
 }
 
-PmergeMe::PmergeMe(const char **av)
+void PmergeMe::printBeforeAndAfter()
 {
-    while (++av && *av)
-    {
-        if (!isDigitValid(*av))
-			throw std::runtime_error ("Error: '" + std::string(*av) + "'");
-        vec.push_back(std::atoi(*av));
-		lst.push_back(std::atoi(*av));
-    }
     std::cout << "Before:  ";
     print(vec);
     clock_t start_vec = clock();
@@ -309,6 +302,18 @@ PmergeMe::PmergeMe(const char **av)
     print(S_vec);
     std::cout << "Time to process a range of " << vec.size() << " elements with std::vector : " << std::fixed << std::setprecision(5) << elapsed_vec << " us" << std::endl;
     std::cout << "Time to process a range of " << vec.size() << " elements with std::list : " << std::fixed << std::setprecision(5) << elapsed_lst << " us" << std::endl;
+}
+
+PmergeMe::PmergeMe(const char **av)
+{
+    while (++av && *av)
+    {
+        if (!isDigitValid(*av))
+			throw std::runtime_error ("Error: '" + std::string(*av) + "'");
+        vec.push_back(std::atoi(*av));
+		lst.push_back(std::atoi(*av));
+    }
+    printBeforeAndAfter();
 }
 
 PmergeMe::PmergeMe(const PmergeMe& other)

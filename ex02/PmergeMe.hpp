@@ -6,7 +6,7 @@
 /*   By: nmunir <nmunir@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/22 10:47:39 by nmunir            #+#    #+#             */
-/*   Updated: 2024/05/26 14:00:30 by nmunir           ###   ########.fr       */
+/*   Updated: 2024/05/26 15:38:27 by nmunir           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,7 @@ class PmergeMe
 		std::list<int> lst;
 		PmergeMe();
 		bool isDigitValid(std::string value);
+		void printBeforeAndAfter();
 	public:
 		PmergeMe(const char **av);
 		PmergeMe(const PmergeMe& other);
