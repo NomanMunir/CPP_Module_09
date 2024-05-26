@@ -1,27 +1,20 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   PmergeMe.cpp                                       :+:      :+:    :+:   */
+/*   PmergeMe_List.cpp                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: nmunir <nmunir@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/22 10:52:57 by nmunir            #+#    #+#             */
-/*   Updated: 2024/05/26 14:12:06 by nmunir           ###   ########.fr       */
+/*   Updated: 2024/05/26 14:01:46 by nmunir           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "PmergeMe.hpp"
+
 typedef std::list<int>::iterator IntListIterator;
 typedef std::pair<int, int> IntPair;
 
-size_t jacobsthal(size_t n)
-{
-    if (n == 0)
-        return 0;
-    if (n == 1)
-        return 1;
-    return jacobsthal(n - 1) + 2 * jacobsthal(n - 2);
-}
 
 std::list<IntPair> createPairs(std::list<int> lst)
 {
@@ -61,6 +54,24 @@ void sortPair(std::list<std::pair<int, int> > &pairs, size_t n)
         --prevIt;
     }
     *it = newPair;
+}
+
+void printPairs(const std::list<std::pair<int, int> > &pairs)
+{
+    // Use a const_iterator since we don't intend to modify the list
+    for (std::list<std::pair<int, int> >::const_iterator it = pairs.begin(); it != pairs.end(); ++it)
+    {
+        std::cout << "pair: " << it->first << " -> " << it->second << std::endl;
+    }
+}
+
+size_t jacobsthal(size_t n)
+{
+    if (n == 0)
+        return 0;
+    if (n == 1)
+        return 1;
+    return jacobsthal(n - 1) + 2 * jacobsthal(n - 2);
 }
 
 std::list<int> build_jacob_insertion_sequence(size_t size)
@@ -106,6 +117,7 @@ void create_S(std::list<int> &S, std::list<int> &pend)
             if (std::find(indexSequence.begin(), indexSequence.end(), iter) != indexSequence.end())
                 iter++;
             indexSequence.push_back(iter);
+            std::cout << "iter: " << iter << std::endl;
             if (iter == 0)
             {
                 iter++;
@@ -114,99 +126,12 @@ void create_S(std::list<int> &S, std::list<int> &pend)
             std::list<int>::iterator it = pend.begin();
             std::advance(it, iter - 1);
             item = *it;
+            std::cout << "item: " << item << std::endl;
             isJacob = true;
         }
+        std::cout <<"hi\n";
+        print(indexSequence);
         std::list<int>::iterator pos = bisearch(S, item);
-        S.insert(pos, item);
-        iter++;
-        jacobIndex++;
-    }
-}
-
-std::vector<std::pair<int, int> > createPairs(std::vector<int> vec)
-{
-    std::vector<std::pair<int, int> > pairs;
-    for (size_t i = 0; i < vec.size() - 1; i += 2)
-    {
-        if (vec[i] < vec[i + 1])
-            pairs.push_back(std::make_pair(vec[i], vec[i + 1]));
-        else
-            pairs.push_back(std::make_pair(vec[i + 1], vec[i]));
-    }
-    return (pairs);
-}
-
-void sortPair(std::vector<std::pair<int, int> > &pairs, size_t n)
-{
-    if (n <= 1)
-        return ;
-    sortPair(pairs, n - 1);
-    size_t i = n - 1;
-    std::pair<int, int> newPair = pairs[n - 1];
-    for (; i > 0 && newPair.second < pairs[i - 1].second; i--)
-        pairs[i] = pairs[i - 1];
-    pairs[i] = newPair;
-}
-
-void printPairs(std::vector<std::pair<int, int> > &pairs)
-{
-    for (size_t i = 0; i < pairs.size(); i++)
-    {
-        std::cout << "pair: " << pairs[i].first <<  " -> " << pairs[i].second << std::endl;
-    }
-}
-
-std::vector<int> build_jacob_insertion_sequence_for_vec(size_t size)
-{
-    std::vector<int> end_sequence;
-    size_t jacob_index = 3;
-    while (jacobsthal(jacob_index) < size - 1)
-    {
-        end_sequence.push_back(jacobsthal(jacob_index));
-        jacob_index += 1;
-    }
-    return (end_sequence);
-}
-
-std::vector<int>::iterator bisearch(std::vector<int>& S, int item)
-{
-    return std::upper_bound(S.begin(), S.end(), item);
-}
-
-void create_S(std::vector<int> &S, std::vector<int> &pend)
-{
-    std::vector<int> jacob_sequence = build_jacob_insertion_sequence_for_vec(pend.size());
-    size_t iter = 0;
-    size_t jacobIndex = 3;
-    bool isJacob = true;
-    S.insert(S.begin(), pend[0]);
-    std::vector<int> indexSequence;
-    indexSequence.push_back(1);
-    int item;
-    while (iter <= pend.size())
-    {
-        if(jacob_sequence.size() != 0 && isJacob)
-        {
-            indexSequence.push_back(jacob_sequence[0]);
-            item = pend[jacob_sequence[0] - 1];
-            jacob_sequence.erase(jacob_sequence.begin());
-            isJacob = false;
-        }
-        else
-        {
-            if (std::find(indexSequence.begin(), indexSequence.end(), iter) != indexSequence.end())
-                iter++;
-            indexSequence.push_back(iter);
-            if (iter == 0)
-            {
-                iter++;
-                continue;
-            }
-            item = pend[iter - 1];
-            
-            isJacob = true;
-        }
-        std::vector<int>::iterator pos = bisearch(S, item);
         S.insert(pos, item);
         iter++;
         jacobIndex++;
@@ -232,9 +157,15 @@ bool PmergeMe::isDigitValid(std::string value)
 		return (false);
     return (true);    
 }
-
-std::list<int> PmergeMe::sortWithLst()
+PmergeMe::PmergeMe(const char **av)
 {
+    while (++av && *av)
+    {
+        if (!isDigitValid(*av))
+			throw std::runtime_error ("Error: '" + std::string(*av) + "'");
+        vec.push_back(std::atoi(*av));
+		lst.push_back(std::atoi(*av));
+    }
     int staggler;
     bool isOdd = false;
     if (lst.size() % 2 != 0)
@@ -245,6 +176,7 @@ std::list<int> PmergeMe::sortWithLst()
     }
     std::list<std::pair<int, int> > pairs =  createPairs(lst);
     sortPair(pairs, pairs.size());
+    // printPairs(pairs);
     std::list<int> S;
     std::list<int> pend;
     std::list<std::pair<int, int> >::iterator i = pairs.begin();
@@ -256,59 +188,13 @@ std::list<int> PmergeMe::sortWithLst()
     if (isOdd)
         pend.push_back(staggler);
     create_S(S, pend);
-    return (S);
-}
-
-std::vector<int> PmergeMe::sortWithVec()
-{
-    int staggler;
-    bool isOdd = false;
-    if (vec.size() % 2 != 0)
-    {
-        staggler = vec.back();
-        isOdd = true;
-        vec.erase(vec.end() - 1);
-    }
-    std::vector<std::pair<int, int> > pairs =  createPairs(vec);
-    sortPair(pairs, pairs.size());
-    std::vector<int> S;
-    std::vector<int> pend;
-    for (size_t i = 0; i < pairs.size(); i++)
-    {
-        S.push_back(pairs[i].second);
-        pend.push_back(pairs[i].first);
-    }
-    if (isOdd)
-        pend.push_back(staggler);
-    create_S(S, pend);
-    return (S);
-}
-
-PmergeMe::PmergeMe(const char **av)
-{
-    while (++av && *av)
-    {
-        if (!isDigitValid(*av))
-			throw std::runtime_error ("Error: '" + std::string(*av) + "'");
-        vec.push_back(std::atoi(*av));
-		lst.push_back(std::atoi(*av));
-    }
-    std::cout << "Before:  ";
-    print(vec);
-    clock_t start_vec = clock();
-    std::vector<int> S_vec = sortWithVec();
-    clock_t end_vec = clock();
+    print(S);
     
-    clock_t start_lst = clock();
-    std::list<int> S_lst = sortWithLst();
-    clock_t end_lst = clock();
+	// std::cout<<"Vector\n";
     
-    double elapsed_vec = static_cast<double>(end_vec - start_vec) / CLOCKS_PER_SEC;
-    double elapsed_lst = static_cast<double>(end_lst - start_lst) / CLOCKS_PER_SEC;
-    std::cout << "After:  ";
-    print(S_vec);
-    std::cout << "Time to process a range of " << vec.size() << " elements with std::vector : " << std::fixed << std::setprecision(5) << elapsed_vec << " us" << std::endl;
-    std::cout << "Time to process a range of " << vec.size() << " elements with std::list : " << std::fixed << std::setprecision(5) << elapsed_lst << " us" << std::endl;
+	// print(vec);
+	// std::cout<<"List\n";
+	// print(lst);
 }
 
 PmergeMe::PmergeMe(const PmergeMe& other)
