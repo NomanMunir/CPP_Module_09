@@ -1,0 +1,174 @@
+void createSortedVector(std::vector<int> &S, std::vector<int> &pend)
+{
+    std::vector<int> jacob_sequence = build_jacob_insertion_sequence<std::vector<int> >(pend.size());
+    size_t iter = 0;
+    size_t jacobIndex = 3;
+    bool isJacob = true;
+    S.insert(S.begin(), pend[0]);
+    std::vector<int> indexSequence;
+    indexSequence.push_back(1);
+    int item;
+    while (iter <= pend.size())
+    {
+        if(jacob_sequence.size() != 0 && isJacob)
+        {
+            indexSequence.push_back(jacob_sequence[0]);
+            item = pend[jacob_sequence[0] - 1];
+            jacob_sequence.erase(jacob_sequence.begin());
+            isJacob = false;
+        }
+        else
+        {
+            if (std::find(indexSequence.begin(), indexSequence.end(), iter) != indexSequence.end())
+                iter++;
+            indexSequence.push_back(iter);
+            if (iter == 0)
+            {
+                iter++;
+                continue;
+            }
+            item = pend[iter - 1];
+            
+            isJacob = true;
+        }
+        std::vector<int>::iterator pos = bisearch(S, item);
+        S.insert(pos, item);
+        iter++;
+        jacobIndex++;
+    }
+}
+
+std::vector<int> build_jacob_insertion_sequence_for_vec(size_t size)
+{
+    std::vector<int> end_sequence;
+    size_t jacob_index = 3;
+    while (jacobsthal(jacob_index) < size - 1)
+    {
+        end_sequence.push_back(jacobsthal(jacob_index));
+        jacob_index += 1;
+    }
+    return (end_sequence);
+}
+
+// std::list<int> build_jacob_insertion_sequence_for_list(size_t size)
+// {
+//     std::list<int> end_sequence;
+//     size_t jacob_index = 3;
+//     while (jacobsthal(jacob_index) < size - 1)
+//     {
+//         end_sequence.push_back(jacobsthal(jacob_index));
+//         jacob_index += 1;
+//     }
+//     return (end_sequence);
+// }
+
+
+void createSortedList(std::list<int> &S, std::list<int> &pend)
+{
+    std::list<int> jacob_sequence = build_jacob_insertion_sequence<std::list<int> >(pend.size());
+    size_t iter = 0;
+    size_t jacobIndex = 3;
+    bool isJacob = true;
+    S.insert(S.begin(), pend.front());
+    std::list<int> indexSequence;
+    indexSequence.push_back(1);
+    int item;
+    while (iter <= pend.size())
+    {
+        if(jacob_sequence.size() != 0 && isJacob)
+        {
+            indexSequence.push_back(jacob_sequence.front());
+            std::list<int>::iterator it = pend.begin();
+            std::advance(it, jacob_sequence.front() - 1);
+            item = *it;
+            jacob_sequence.erase(jacob_sequence.begin());
+            isJacob = false;
+        }
+        else
+        {
+            if (std::find(indexSequence.begin(), indexSequence.end(), iter) != indexSequence.end())
+                iter++;
+            indexSequence.push_back(iter);
+            if (iter == 0)
+            {
+                iter++;
+                continue;
+            }
+            std::list<int>::iterator it = pend.begin();
+            std::advance(it, iter - 1);
+            item = *it;
+            isJacob = true;
+        }
+        std::list<int>::iterator pos = bisearch(S, item);
+        S.insert(pos, item);
+        iter++;
+        jacobIndex++;
+    }
+}
+
+void sortListPair(std::list<IntPair> &pairs, size_t n)
+{
+    if (n <= 1)
+        return;
+    sortListPair(pairs, n - 1);
+    size_t i = n - 1;
+    std::list<IntPair> ::iterator it = pairs.begin();
+    std::advance(it, n - 1);
+    IntPair newPair = *it;
+    std::list<IntPair>::iterator prevIt = it;
+    --prevIt;
+    for (; i > 0 && (newPair.second < prevIt->second); --i)
+    {
+        *it = *prevIt;
+        --it;
+        --prevIt;
+    }
+    *it = newPair;
+}
+
+
+void printPairs(std::vector<IntPair> &pairs)
+{
+    for (size_t i = 0; i < pairs.size(); i++)
+    {
+        std::cout << "pair: " << pairs[i].first <<  " -> " << pairs[i].second << std::endl;
+    }
+}
+
+
+void sortVectorPair(std::vector<IntPair> &pairs, size_t n)
+{
+    if (n <= 1)
+        return ;
+    sortVectorPair(pairs, n - 1);
+    size_t i = n - 1;
+    IntPair newPair = pairs[n - 1];
+    for (; i > 0 && newPair.second < pairs[i - 1].second; i--)
+        pairs[i] = pairs[i - 1];
+    pairs[i] = newPair;
+}
+
+std::vector<IntPair> createVectorPairs(std::vector<int> vec)
+{
+    std::vector<IntPair> pairs;
+    for (size_t i = 0; i < vec.size() - 1; i += 2)
+    {
+        if (vec[i] < vec[i + 1])
+            pairs.push_back(std::make_pair(vec[i], vec[i + 1]));
+        else
+            pairs.push_back(std::make_pair(vec[i + 1], vec[i]));
+    }
+    return (pairs);
+}
+
+void sortVectorPair(std::vector<IntPair> &pairs, size_t n)
+{
+    if (n <= 1)
+        return ;
+    sortVectorPair(pairs, n - 1);
+    size_t i = n - 1;
+    IntPair newPair = pairs[n - 1];
+    for (; i > 0 && newPair.second < pairs[i - 1].second; i--)
+        pairs[i] = pairs[i - 1];
+    pairs[i] = newPair;
+}
