@@ -6,7 +6,7 @@
 /*   By: nmunir <nmunir@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/21 13:24:37 by nmunir            #+#    #+#             */
-/*   Updated: 2024/06/02 16:08:28 by nmunir           ###   ########.fr       */
+/*   Updated: 2024/05/27 15:27:05 by nmunir           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@ int main(int ac, const char **av)
 {
 	if (ac < 2)
 	{
-		std::cout << "No Input\nUsage: ./PmergeMe < numbers >" << std::endl;
+		std::cerr << "No Input\nUsage: ./PmergeMe < numbers >" << std::endl;
 		return (1);
 	}
 	try
@@ -25,7 +25,7 @@ int main(int ac, const char **av)
 	}
 	catch(const std::exception& e)
 	{
-		std::cout << e.what() << '\n';
+		std::cerr << e.what() << '\n';
 	}
 	
 	return (0);

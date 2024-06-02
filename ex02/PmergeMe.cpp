@@ -6,11 +6,213 @@
 /*   By: nmunir <nmunir@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/22 10:52:57 by nmunir            #+#    #+#             */
-/*   Updated: 2024/05/28 11:03:34 by nmunir           ###   ########.fr       */
+/*   Updated: 2024/06/02 16:29:13 by nmunir           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "PmergeMe.hpp"
+
+size_t PmergeMe::jacobsthal(size_t n)
+{
+    if (n == 0)
+        return 0;
+    if (n == 1)
+        return 1;
+    return jacobsthal(n - 1) + 2 * jacobsthal(n - 2);
+}
+
+std::list<IntPair> PmergeMe::createPairsList(std::list<int> lst)
+{
+    std::list<IntPair> pairs;
+    IntListIterator i = lst.begin();
+    while (i != lst.end())
+    {
+        IntListIterator next = i;
+        ++next;
+        if (next != lst.end())
+        {
+            if (*i < *next)
+                pairs.push_back(IntPair(*i, *next));
+            else
+                pairs.push_back(IntPair(*next, *i));
+        }
+        ++i; ++i;
+    }
+    return pairs;
+}
+
+void PmergeMe::sortPairList(std::list<std::pair<int, int> > &pairs, size_t n)
+{
+    if (n <= 1)
+        return;
+    sortPairList(pairs, n - 1);
+    size_t i = n - 1;
+    std::list<std::pair<int, int> >::iterator it = pairs.begin();
+    std::advance(it, n - 1);
+    std::pair<int, int> newPair = *it;
+    std::list<std::pair<int, int> >::iterator prevIt = it;
+    --prevIt;
+    for (; i > 0 && (newPair.second < prevIt->second); --i)
+    {
+        *it = *prevIt;
+        --it;
+        --prevIt;
+    }
+    *it = newPair;
+}
+
+std::list<int> PmergeMe::build_jacob_insertion_sequence(size_t size)
+{
+    std::list<int> end_sequence;
+    size_t jacob_index = 3;
+    while (jacobsthal(jacob_index) < size - 1)
+    {
+        end_sequence.push_back(jacobsthal(jacob_index));
+        jacob_index += 1;
+    }
+    return (end_sequence);
+}
+
+std::list<int>::iterator PmergeMe::bisearch(std::list<int>& S, int item)
+{
+    return std::upper_bound(S.begin(), S.end(), item);
+}
+
+void PmergeMe::createSortedList(std::list<int> &S, std::list<int> &pend)
+{
+    std::list<int> jacob_sequence = build_jacob_insertion_sequence(pend.size());
+    size_t iter = 0;
+    size_t jacobIndex = 3;
+    bool isJacob = true;
+    S.insert(S.begin(), pend.front());
+    if (pend.size() == 1)
+        return;
+    std::list<int> indexSequence;
+    indexSequence.push_back(1);
+    int item;
+    while (iter <= pend.size())
+    {
+        if(jacob_sequence.size() != 0 && isJacob)
+        {
+            indexSequence.push_back(jacob_sequence.front());
+            std::list<int>::iterator it = pend.begin();
+            std::advance(it, jacob_sequence.front() - 1);
+            item = *it;
+            jacob_sequence.erase(jacob_sequence.begin());
+            isJacob = false;
+        }
+        else
+        {
+            if (std::find(indexSequence.begin(), indexSequence.end(), iter) != indexSequence.end())
+                iter++;
+            indexSequence.push_back(iter);
+            if (iter == 0)
+            {
+                iter++;
+                continue;
+            }
+            std::list<int>::iterator it = pend.begin();
+            std::advance(it, iter - 1);
+            item = *it;
+            isJacob = true;
+        }
+        std::list<int>::iterator pos = bisearch(S, item);
+        S.insert(pos, item);
+        iter++;
+        jacobIndex++;
+    }
+}
+
+std::vector<std::pair<int, int> > PmergeMe::createPairsVector(std::vector<int> vec)
+{
+    std::vector<std::pair<int, int> > pairs;
+    for (size_t i = 0; i < vec.size() - 1; i += 2)
+    {
+        if (vec[i] < vec[i + 1])
+            pairs.push_back(std::make_pair(vec[i], vec[i + 1]));
+        else
+            pairs.push_back(std::make_pair(vec[i + 1], vec[i]));
+    }
+    return (pairs);
+}
+
+void PmergeMe::sortPairVector(std::vector<std::pair<int, int> > &pairs, size_t n)
+{
+    if (n <= 1)
+        return ;
+    sortPairVector(pairs, n - 1);
+    size_t i = n - 1;
+    std::pair<int, int> newPair = pairs[n - 1];
+    for (; i > 0 && newPair.second < pairs[i - 1].second; i--)
+        pairs[i] = pairs[i - 1];
+    pairs[i] = newPair;
+}
+
+void PmergeMe::printPairs(std::vector<std::pair<int, int> > &pairs)
+{
+    for (size_t i = 0; i < pairs.size(); i++)
+    {
+        std::cout << "pair: " << pairs[i].first <<  " -> " << pairs[i].second << std::endl;
+    }
+}
+
+std::vector<int> PmergeMe::build_jacob_insertion_sequence_for_vec(size_t size)
+{
+    std::vector<int> end_sequence;
+    size_t jacob_index = 3;
+    while (jacobsthal(jacob_index) < size - 1)
+    {
+        end_sequence.push_back(jacobsthal(jacob_index));
+        jacob_index += 1;
+    }
+    return (end_sequence);
+}
+
+std::vector<int>::iterator PmergeMe::bisearch(std::vector<int>& S, int item)
+{
+    return std::upper_bound(S.begin(), S.end(), item);
+}
+
+void PmergeMe::createSortedVector(std::vector<int> &S, std::vector<int> &pend)
+{
+    std::vector<int> jacob_sequence = build_jacob_insertion_sequence_for_vec(pend.size());
+    size_t iter = 0;
+    size_t jacobIndex = 3;
+    bool isJacob = true;
+    S.insert(S.begin(), pend[0]);
+    if (pend.size() == 1)
+        return;
+    std::vector<int> indexSequence;
+    indexSequence.push_back(1);
+    int item;
+    while (iter <= pend.size())
+    {
+        if(jacob_sequence.size() != 0 && isJacob)
+        {
+            indexSequence.push_back(jacob_sequence[0]);
+            item = pend[jacob_sequence[0] - 1];
+            jacob_sequence.erase(jacob_sequence.begin());
+            isJacob = false;
+        }
+        else
+        {
+            while (std::find(indexSequence.begin(), indexSequence.end(), iter) != indexSequence.end())
+                iter++;
+            indexSequence.push_back(iter);
+            if (iter == 0)
+            {
+                iter++;
+                continue;
+            }
+            item = pend[iter - 1];
+            isJacob = true;
+        }
+        std::vector<int>::iterator pos = bisearch(S, item);
+        S.insert(pos, item);
+        iter++;
+        jacobIndex++;
+    }
+}
 
 bool PmergeMe::isDigitValid(std::string value)
 {
@@ -32,50 +234,6 @@ bool PmergeMe::isDigitValid(std::string value)
     return (true);    
 }
 
-size_t PmergeMe::jacobsthal(size_t n)
-{
-    if (n == 0)
-        return 0;
-    if (n == 1)
-        return 1;
-    return jacobsthal(n - 1) + 2 * jacobsthal(n - 2);
-}
-
-std::list<IntPair> PmergeMe::createListPairs(std::list<int> lst)
-{
-    std::list<IntPair> pairs;
-    IntListIterator i = lst.begin();
-    while (i != lst.end())
-    {
-        IntListIterator next = i;
-        ++next;
-        if (next != lst.end())
-        {
-            if (*i < *next)
-                pairs.push_back(IntPair(*i, *next));
-            else
-                pairs.push_back(IntPair(*next, *i));
-        }
-        ++i; ++i;
-    }
-    return pairs;
-}
-
-
-
-std::vector<IntPair> PmergeMe::createVectorPairs(std::vector<int> vec)
-{
-    std::vector<IntPair> pairs;
-    for (size_t i = 0; i < _size - 1; i += 2)
-    {
-        if (vec[i] < vec[i + 1])
-            pairs.push_back(std::make_pair(vec[i], vec[i + 1]));
-        else
-            pairs.push_back(std::make_pair(vec[i + 1], vec[i]));
-    }
-    return (pairs);
-}
-
 std::list<int> PmergeMe::sortWithLst()
 {
     int staggler;
@@ -86,11 +244,11 @@ std::list<int> PmergeMe::sortWithLst()
         isOdd = true;
         lst.pop_back();
     }
-    std::list<IntPair> pairs =  createListPairs(lst);
-    sortPair(pairs, pairs.size());
+    std::list<std::pair<int, int> > pairs =  createPairsList(lst);
+    sortPairList(pairs, pairs.size());
     std::list<int> S;
     std::list<int> pend;
-    std::list<IntPair>::iterator i = pairs.begin();
+    std::list<std::pair<int, int> >::iterator i = pairs.begin();
     for (; i != pairs.end(); i++)
     {
         S.push_back(i->second);
@@ -98,7 +256,7 @@ std::list<int> PmergeMe::sortWithLst()
     }
     if (isOdd)
         pend.push_back(staggler);
-    createSortedContainer(S, pend);
+    createSortedList(S, pend);
     return (S);
 }
 
@@ -112,10 +270,10 @@ std::vector<int> PmergeMe::sortWithVec()
         isOdd = true;
         vec.erase(vec.end() - 1);
     }
-    std::vector<IntPair> pairs =  createVectorPairs(vec);
+    std::vector<std::pair<int, int> > pairs =  createPairsVector(vec);
+    sortPairVector(pairs, pairs.size());
     std::vector<int> S;
     std::vector<int> pend;
-    sortPair(pairs, pairs.size());
     for (size_t i = 0; i < pairs.size(); i++)
     {
         S.push_back(pairs[i].second);
@@ -123,93 +281,56 @@ std::vector<int> PmergeMe::sortWithVec()
     }
     if (isOdd)
         pend.push_back(staggler);
-    createSortedContainer(S, pend);
+    createSortedVector(S, pend);
     return (S);
 }
-// void PmergeMe::sort()
-// {
-//     int staggler;
-//     bool isOdd = false;
-//     if (_size % 2 != 0)
-//     {
-//         staggler = vec.back();
-//         isOdd = true;
-//         vec.erase(vec.end() - 1);
-//         lst.pop_back();
-//     }
-//     std::vector<IntPair> vecPairs =  createVectorPairs(vec);
-//     std::list<IntPair> lstPairs =  createListPairs(lst);
-//     sortPair(vecPairs, vecPairs.size());
-//     sortPair(vecPairs, lstPairs.size());
-// }
 
-void PmergeMe::sortAndPrint()
+void PmergeMe::printBeforeAndAfter(const char **av)
 {
+    size_t i = 1;
     std::cout << "Before:  ";
-    print(vec);
-    
-    // Measuring time for vector sorting
     clock_t start_vec = clock();
+    while (i <= _size)
+    {
+        vec.push_back(std::atoi(av[i]));
+        i++;
+    }
+    print(vec);
     std::vector<int> S_vec = sortWithVec();
     clock_t end_vec = clock();
     
-    // Measuring time for list sorting
     clock_t start_lst = clock();
+    i = 1;
+    while (i <= _size)
+    {
+        lst.push_back(std::atoi(av[i]));
+        i++;
+    }
     std::list<int> S_lst = sortWithLst();
     clock_t end_lst = clock();
     
-    // Converting clock ticks to microseconds
-    double elapsed_vec_us = static_cast<double>(end_vec - start_vec) * 1000000 / CLOCKS_PER_SEC;
-    double elapsed_lst_us = static_cast<double>(end_lst - start_lst) * 1000000 / CLOCKS_PER_SEC;
-    
+    double elapsed_vec = static_cast<double>(end_vec - start_vec) / CLOCKS_PER_SEC;
+    double elapsed_lst = static_cast<double>(end_lst - start_lst) / CLOCKS_PER_SEC;
     std::cout << "After:  ";
-    print(S_vec);
-    
-    // Corrected to display the size of the original container
-    size_t size = vec.size();
-    std::cout << "Time to process a range of " << size << " elements with std::vector: " 
-              << std::fixed << std::setprecision(6) << elapsed_vec_us << " us" << std::endl;
-    std::cout << "Time to process a range of " << size << " elements with std::list: " 
-              << std::fixed << std::setprecision(6) << elapsed_lst_us << " us" << std::endl;
+    print(S_lst);
+    std::cout << "Time to process a range of " << _size << " elements with std::vector : " << std::fixed << std::setprecision(7) << elapsed_vec << " us" << std::endl;
+    std::cout << "Time to process a range of " << _size << " elements with std::list : " << std::fixed << std::setprecision(7) << elapsed_lst << " us" << std::endl;
 }
-
-// template <class Container>
-// bool is_sorted(const Container& container) {
-//     if (container.empty()) return true;
-
-//     typename Container::const_iterator it = container.begin();
-//     typename Container::const_iterator next_it = it;
-//     ++next_it;
-
-//     while (next_it != container.end()) {
-//         if (*next_it < *it) {
-//             return false;
-//         }
-//         ++it;
-//         ++next_it;
-//     }
-//     return true;
-// }
 
 PmergeMe::PmergeMe(const char **av)
 {
-    while (++av && *av)
+    _size = 0;
+    size_t i = 1;
+    while (av[i])
     {
-        if (!isDigitValid(*av))
-			throw std::invalid_argument("Error");
-        vec.push_back(std::atoi(*av));
-		lst.push_back(std::atoi(*av));
+        if (!isDigitValid(av[i]))
+			throw std::runtime_error ("Error: '" + std::string(av[i]) + "'");
+        i++;
+        _size++;
     }
-    _size = vec.size();
     if (_size == 1)
         return ;
-        // throw std::runtime_error("Error: " + std::string("Size need to be more then 1"));
-    // if (is_sorted(vec))
-    // {
-    //     std::cout << "already sorted.\n";
-    //     return ;
-    // }
-    sortAndPrint();
+    printBeforeAndAfter(av);
 }
 
 PmergeMe::PmergeMe(const PmergeMe& other)
@@ -221,9 +342,6 @@ PmergeMe& PmergeMe::operator=(const PmergeMe& rhs)
 	if (this != &rhs) {
         vec = rhs.vec;
         lst = rhs.lst;
-        _size = rhs._size;
     }
 	return (*this);
 }
-
-PmergeMe::~PmergeMe() { }

@@ -6,7 +6,7 @@
 /*   By: nmunir <nmunir@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/19 13:06:21 by nmunir            #+#    #+#             */
-/*   Updated: 2024/06/02 09:01:24 by nmunir           ###   ########.fr       */
+/*   Updated: 2024/06/02 16:07:54 by nmunir           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 int main(int argc, const char** argv) {
 	if (argc != 2)
 	{
-		std::cerr << "Invalid Input: ./< file name >" << std::endl;
+		std::cout << "Invalid Input: ./< file name >" << std::endl;
 		 return (1);
 	}
 	try
@@ -27,7 +27,7 @@ int main(int argc, const char** argv) {
 	}
 	catch(const std::exception& e)
 	{
-		std::cerr << e.what() << '\n';
+		std::cout << e.what() << '\n';
 	}
 	return 0;
 }
