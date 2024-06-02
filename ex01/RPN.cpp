@@ -6,7 +6,7 @@
 /*   By: nmunir <nmunir@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/28 10:39:54 by nmunir            #+#    #+#             */
-/*   Updated: 2024/05/28 12:23:51 by nmunir           ###   ########.fr       */
+/*   Updated: 2024/06/02 10:26:23 by nmunir           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,11 +68,11 @@ void RPN::calculate(std::deque<std::string> data)
             else if (tok == "+")
                 op.push_back(a + b);
             else if (tok == "/") {
-                if (b == 0) {
-                    std::cerr << "Division by zero" << std::endl;
+                if (a == 0 ) {
+                    std::cerr << "Error: Division by zero" << std::endl;
                     return;
                 }
-                op.push_back(a / b);
+                op.push_back(b / a);
             }
         } else {
             op.push_back(std::atoi(tok.c_str()));
@@ -92,9 +92,7 @@ void RPN::initQue(std::string &input)
 	while(iss >> word)
 		_data.push_front(word);
 	if (!validateInput(_data))
-	{ 
-		throw std::runtime_error("Error\n");
-	}
+		throw std::runtime_error("Error");
 }
 
 RPN::RPN(std::string input)

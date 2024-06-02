@@ -6,7 +6,7 @@
 /*   By: nmunir <nmunir@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/20 14:51:32 by nmunir            #+#    #+#             */
-/*   Updated: 2024/05/21 13:11:55 by nmunir           ###   ########.fr       */
+/*   Updated: 2024/06/02 11:19:04 by nmunir           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,29 +18,29 @@ void BitcoinExchange::createDatabase()
 {
 	std::ifstream file("./data.csv");
 	if (!file.is_open())
-		throw std::runtime_error("Error: unable to open './data.csv' file.");
-
+		throw std::runtime_error("Error: unable to open './data.csv' file.\nPlease provide a data.csv file.");
+	if (isFileEmpty("./data.csv"))
+		throw std::runtime_error("Error: file 'data.csv' is empty.");
 	std::string line;
 	getline(file, line);
-
 	while (std::getline(file, line))
-	{	
+	{
 		line.erase(std::remove(line.begin(), line.end(), ' '), line.end());
 
 		std::size_t pos = line.find(",");
 		if (pos != std::string::npos)
 		{
 			std::string date = line.substr(0, pos);
-			// isDateValid(date);
 			std::string sValue = line.substr(pos + 1);
 			float value = std::atof(sValue.c_str());
-			// isValueValid(value);
 			database.insert(std::make_pair(date, value));
 		}
 	}
+	if (database.size() == 0)
+		throw std::runtime_error("Error: database is empty!");
 }
 
-static int countOccurrences(const std::string& str, char ch) {
+int BitcoinExchange::countOccurrences(const std::string& str, char ch) {
     size_t count = 0;
     for (size_t i = 0; i < str.length(); i++) {
         if (str[i] == ch)
@@ -49,8 +49,9 @@ static int countOccurrences(const std::string& str, char ch) {
     return count;
 }
 
-int isValueValid(std::string value)
+int BitcoinExchange::isValueValid(std::string value)
 {
+	std::string tmp = value;
 	if (countOccurrences(value, '.') > 1 || value[value.length() - 1] == '.') { return (1); }
 
 	if ( value[0] == '-' || value[0] == '+')
@@ -68,21 +69,21 @@ int isValueValid(std::string value)
 	}
 	try
 	{
-		float number = std::atof(value.c_str());
+		float number = std::atof(tmp.c_str());
 		if (number < 0)
 		{
-			std::cerr << "Error: not a positive number." << std::endl;
+			std::cout << "Error: not a positive number." << std::endl;
 			return (3);
 		}
-		else if (number > 1000)
+		else if (number > 1000.0)
 		{
-			std::cerr << "Error: too large a number." << std::endl;
+			std::cout << "Error: too large a number." << std::endl;
 			return (3);
 		}
 	}
 	catch(const std::exception& e)
 	{
-		std::cerr << e.what() << '\n';
+		std::cout << e.what() << '\n';
 		throw;
 	}
 	return (2);
@@ -110,18 +111,25 @@ bool BitcoinExchange::isDateValid(const std::string date)
 	const int days_in_months[] = { 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 };
 	if (month == 2 && isLeapYear(year)) {
         if (day < 1 || day > 29) {
-            return false; // Invalid day in February leap year
+            return false;
         }
     } else {
         if (day < 1 || day > days_in_months[month - 1]) {
-            return false; // Invalid day in month
+            return false;
         }
 	}
 	return (true);
 }
 
-bool BitcoinExchange::isLeapYear(int year) {
+bool BitcoinExchange::isLeapYear(int year)
+{
     return (year % 4 == 0 && year % 100 != 0) || (year % 400 == 0);
+}
+
+bool BitcoinExchange::isFileEmpty(const std::string& filename)
+{
+    std::ifstream file(filename);
+    return file.peek() == std::ifstream::traits_type::eof();
 }
 
 void BitcoinExchange::readInputFile(std::string& inputFile)
@@ -133,12 +141,10 @@ void BitcoinExchange::readInputFile(std::string& inputFile)
 			throw std::runtime_error("Error: unable to open file '" + inputFile + "'");
 		std::string line;
 		getline(file, line);
+		if (isFileEmpty(inputFile))
+			throw std::runtime_error("Error: file '" + inputFile + "' is empty.");
 		if (line != "date | value")
-		{
-			file.seekg(0, std::ios::end);
-			std::streampos fileSize = file.tellg();
 			file.seekg(0, std::ios::beg);
-		}
 
 		while (std::getline(file, line))
 		{	
@@ -149,7 +155,7 @@ void BitcoinExchange::readInputFile(std::string& inputFile)
 				std::string date = line.substr(0, pos);
 				if (!isDateValid(date))
 				{
-					std::cerr << "Error: bad input => " << line << std::endl;
+					std::cout << "Error: bad input => " << line << std::endl;
 					continue;
 				}
 				std::string sValue = line.substr(pos + 1);
@@ -158,19 +164,16 @@ void BitcoinExchange::readInputFile(std::string& inputFile)
 				if (validValue == 2)
 					compareValue(date, value);
 				else if (validValue == 1)
-					std::cerr << "Error: bad input => " << line << std::endl;
+					std::cout << "Error: bad input => " << line << std::endl;
 			}
 			else
-			{
-				std::cerr << "Error: bad input => " << line << std::endl;
-			}
+				std::cout << "Error: bad input => " << line << std::endl;
 		}
 	}
 	catch(const std::exception& e)
 	{
-		std::cerr << e.what() << '\n';
+		std::cout << e.what() << '\n';
 	}
-	
 }
 
 BitcoinExchange::BitcoinExchange(std::string inputFile)
@@ -182,7 +185,7 @@ BitcoinExchange::BitcoinExchange(std::string inputFile)
 	}
 	catch(const std::exception& e)
 	{
-		std::cerr << e.what() << '\n';
+		std::cout << e.what() << '\n';
 	}
 }
 
@@ -193,13 +196,13 @@ void BitcoinExchange::compareValue(const std::string& date, float value) {
             --it;
 		else if (it == database.begin())
 		{
-    		std::cout << it->first << " => " << value << " = "  <<  it->second * value << std::endl;
+    		std::cout << date << " => " << value << " = "  <<  it->second * value << std::endl;
 			return ;
 		}
 		else
             throw std::runtime_error("No valid date found in database.");
     }
-    std::cout << it->first << " => " << value << " = "  <<  it->second * value << std::endl;
+    std::cout << date << " => " << value << " = "  <<  it->second * value << std::endl;
 }
 
 BitcoinExchange::BitcoinExchange(const BitcoinExchange& other)

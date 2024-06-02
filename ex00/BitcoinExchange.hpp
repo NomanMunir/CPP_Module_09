@@ -6,7 +6,7 @@
 /*   By: nmunir <nmunir@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/20 14:44:29 by nmunir            #+#    #+#             */
-/*   Updated: 2024/05/21 12:51:52 by nmunir           ###   ########.fr       */
+/*   Updated: 2024/06/02 11:15:49 by nmunir           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,9 @@ class BitcoinExchange
 	bool isDateValid(const std::string date);
 	void readInputFile(std::string& inputFile);
 	void compareValue(const std::string& date, float value);
+	bool isFileEmpty(const std::string& filename);
+	int countOccurrences(const std::string& str, char ch);
+	int isValueValid(std::string value);
 	BitcoinExchange();
 	public:
 		BitcoinExchange(std::string inputFile);
