@@ -6,7 +6,7 @@
 /*   By: nmunir <nmunir@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/20 14:51:32 by nmunir            #+#    #+#             */
-/*   Updated: 2024/06/02 11:19:04 by nmunir           ###   ########.fr       */
+/*   Updated: 2024/06/03 08:56:41 by nmunir           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -128,7 +128,7 @@ bool BitcoinExchange::isLeapYear(int year)
 
 bool BitcoinExchange::isFileEmpty(const std::string& filename)
 {
-    std::ifstream file(filename);
+    std::ifstream file(filename.c_str());
     return file.peek() == std::ifstream::traits_type::eof();
 }
 
@@ -216,6 +216,8 @@ BitcoinExchange& BitcoinExchange::operator=(const BitcoinExchange& rhs)
 		this->database = rhs.database; 
 	return (*this);
 }
+
+BitcoinExchange::~BitcoinExchange() { }
 
 void BitcoinExchange::printDatabase()
 {

@@ -6,7 +6,7 @@
 /*   By: nmunir <nmunir@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/22 10:52:57 by nmunir            #+#    #+#             */
-/*   Updated: 2024/06/02 16:29:13 by nmunir           ###   ########.fr       */
+/*   Updated: 2024/06/03 08:44:45 by nmunir           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,7 +82,6 @@ void PmergeMe::createSortedList(std::list<int> &S, std::list<int> &pend)
 {
     std::list<int> jacob_sequence = build_jacob_insertion_sequence(pend.size());
     size_t iter = 0;
-    size_t jacobIndex = 3;
     bool isJacob = true;
     S.insert(S.begin(), pend.front());
     if (pend.size() == 1)
@@ -119,7 +118,6 @@ void PmergeMe::createSortedList(std::list<int> &S, std::list<int> &pend)
         std::list<int>::iterator pos = bisearch(S, item);
         S.insert(pos, item);
         iter++;
-        jacobIndex++;
     }
 }
 
@@ -177,7 +175,6 @@ void PmergeMe::createSortedVector(std::vector<int> &S, std::vector<int> &pend)
 {
     std::vector<int> jacob_sequence = build_jacob_insertion_sequence_for_vec(pend.size());
     size_t iter = 0;
-    size_t jacobIndex = 3;
     bool isJacob = true;
     S.insert(S.begin(), pend[0]);
     if (pend.size() == 1)
@@ -210,7 +207,6 @@ void PmergeMe::createSortedVector(std::vector<int> &S, std::vector<int> &pend)
         std::vector<int>::iterator pos = bisearch(S, item);
         S.insert(pos, item);
         iter++;
-        jacobIndex++;
     }
 }
 
@@ -345,3 +341,5 @@ PmergeMe& PmergeMe::operator=(const PmergeMe& rhs)
     }
 	return (*this);
 }
+
+PmergeMe::~PmergeMe() { }

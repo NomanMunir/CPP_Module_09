@@ -6,7 +6,7 @@
 /*   By: nmunir <nmunir@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/20 14:44:29 by nmunir            #+#    #+#             */
-/*   Updated: 2024/06/02 11:15:49 by nmunir           ###   ########.fr       */
+/*   Updated: 2024/06/03 08:53:02 by nmunir           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,6 +37,7 @@ class BitcoinExchange
 		BitcoinExchange(std::string inputFile);
 		BitcoinExchange(const BitcoinExchange& other);
 		BitcoinExchange& operator=(const BitcoinExchange& rhs);
+		~BitcoinExchange();
 		void printDatabase();
 };
 

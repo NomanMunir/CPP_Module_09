@@ -6,7 +6,7 @@
 /*   By: nmunir <nmunir@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/28 10:39:54 by nmunir            #+#    #+#             */
-/*   Updated: 2024/06/02 10:26:23 by nmunir           ###   ########.fr       */
+/*   Updated: 2024/06/03 08:50:45 by nmunir           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,6 +56,7 @@ void RPN::calculate(std::deque<std::string> data)
                 std::cerr << "Invalid expression" << std::endl;
                 return;
             }
+
             int a = op.back();
             op.pop_back();
             int b = op.back();

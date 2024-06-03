@@ -6,12 +6,13 @@
 /*   By: nmunir <nmunir@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/22 10:47:39 by nmunir            #+#    #+#             */
-/*   Updated: 2024/06/02 16:16:40 by nmunir           ###   ########.fr       */
+/*   Updated: 2024/06/03 08:44:20 by nmunir           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef	PMERGEME_HPP
 #define	PMERGEME_HPP
+
 #include <iostream>
 #include <sstream>
 #include <string>
@@ -53,12 +54,16 @@ class PmergeMe
 		PmergeMe(const char **av);
 		PmergeMe(const PmergeMe& other);
 		PmergeMe& operator=(const PmergeMe& rhs);
+		~PmergeMe();
 		std::vector<int> sortWithVec();
 		std::list<int> sortWithLst();
+
+		template <class T>
+		void print(const T& data);
 };
 
 template <class T>
-void print(const T& data)
+void PmergeMe::print(const T& data)
 {
     typename T::const_iterator it = data.begin();
     for (; it != data.end(); ++it)
